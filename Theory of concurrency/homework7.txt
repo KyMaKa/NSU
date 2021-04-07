@@ -1,0 +1,69 @@
+
+1.
+
+	BOOL = (assign0 → False| assign1 → True)
+
+	False = (fetch0 → False| assign0 → False | assign1 → True)
+
+	True = (fetch1 → True | assign0 → False | assign1 → true)
+
+2.
+
+Изменение символов для процесса Counter:
+	f(static) = got_money;
+	f(incBy1) = recieve_money;
+	f(decBy1) = give_money;
+	f(zero) = no_money;
+
+	Wallet = f(Counter);
+	
+	Wallet = got_money -> got_money -> Wallet | no_money -> no_money -> Wallet | got_money -> recieve_money -> got_money -> Wallet |
+	| got_money -> give_money -> got_money -> Wallet | got_money -> give_money -> no_money -> Wallet |
+	| no_money -> recieve_money -> got_moey -> Wallet
+
+Изменение символов для процесса Sensor: 
+	f(no_car) = no_client;
+	f(car_a_in) = cash_deposit_s;
+	f(car_a_out) = cash_withdrawal_s;
+	f(car_d_in) = cash_deposited;
+	f(car_d_out) = cash_withdrawn;
+
+	ATM = f(Sensor);
+
+	ATM = no_client -> no_client -> ATM | no_client -> cash_deposit_s -> cash_deposited -> no_client -> ATM |
+            no_client -> cash_withdrawal_s -> cash_withdrawn -> no_client -> ATM
+
+Изменение символов для процесса Barrier:
+	f(open) = fire;
+	f(close) = no_fire;
+
+	Lighter = f(Barrier);
+
+	Lighter = no_fire -> no_fire -> Lighter | no_fire -> fire -> Lighter;
+
+Изменение символов для процесса Light:
+	f(red) = close;
+	f(green) = open; 
+
+	Window = f(Light);
+
+	Window = open -> open -> Window | close -> close -> Window | open -> close -> Window | close -> open -> Window;
+
+3.
+
+	Elite_Parking - процесс полного описания параллельной системы
+	Elite_Parking = Barrier || Light || Counter || Sensor || Cont
+
+4.
+
+	FOOT0 = (x : D → x.picksUp i → (x.picksUp ⊕ 1) → (FOOT1 || WantStandUP))
+
+	FOOT j = (x : D → x.picksUp i → (x.picksUp ⊕ 1) → (FOOT j+1 || WantStandUP))
+
+	WantStandUP = y : U → FOOT j‒1 for j ∈ {1, 2, 3}
+
+	FOOT4 = (y : U → FOOT3)
+
+	U = ⋃i=0^4 {i.gets up}
+
+	D = ⋃i=0^4 {i.sits down}

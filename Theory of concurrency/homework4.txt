@@ -1,0 +1,39 @@
+CSP - процессы
+
+Машина: 
+       aCar = {absent, car_approaching, car_d_out, car_d_in}
+
+       Car = absent -> absent -> Car | absent -> car_approaching -> Car | absent -> car_approaching -> car_d_in
+              -> Car | absent -> car_approaching -> car_d_out -> Car.
+
+Шлагбаум: 
+       aBarrier = {open, close}
+
+       Barrier = close -> close -> Barrier | close -> open -> Barrier
+
+Светофор: 
+       aLight = {red, green}
+
+       Light = green -> green -> Light | red -> red -> Light | green -> red -> Light | red -> green -> Light
+
+Счетчик: 
+       aCounter = {static, incBy1, decBy1, zero}
+
+       Counter = static -> static -> Counter | zero -> zero -> Counter | static -> incBy1 -> static -> Counter |
+              static -> decBy1 -> static -> Counter | static -> decBy1 -> zero -> Counter | zero -> incBy1 -> static -> Counter
+
+Датчик машин: 
+       aSensor = {no_car, car_a_in, car_a_out, car_d_in, car_d_out}
+
+       Sensor = no_car -> no_car -> Sensor | no_car -> car_a_in -> car_d_in -> no_car -> Sensor |
+              no_car -> car_a_out -> car_d_out -> no_car -> Sensor
+
+Контроллер: 
+       aCont = {static, green, red, open, close, car_a_in, car_a_out, car_d_in, car_d_in, no_car, incBy1, decBy1, zero}
+
+       Cont = static -> static -> Cont | zero -> zero -> Cont | static -> carIn | static -> carOut | zero -> noSpace | zero -> carOut
+
+       carIn = green -> car_a_in -> open -> car_d_in -> decBy1 -> no_car -> close -> Cont |
+              green -> car_a_in -> open -> car_d_in -> decBy1 -> no_car -> close -> zero -> noSpace
+       carOut = car_a_out -> open -> car_d_out -> incBy1 -> no_car -> close -> Cont
+       noSpace = red -> car_a_in -> close -> zero -> Cont

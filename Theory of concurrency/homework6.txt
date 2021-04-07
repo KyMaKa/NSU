@@ -1,0 +1,12 @@
+S1(tr) = (#(tr ↾ {open}) = #(tr ↾ {close}))
+S2(tr) = (¬<open>^n in tr), n > 1
+S3(tr) = (<open, close> in tr)
+
+
+
+Car = absent -> car_a_in -> car_d_in -> Car
+Sensor = no_car -> car_a_in -> car_d_in -> no_car -> sensor 
+
+Car || Sensor = absent -> ((car_a_in -> car_d_in -> C) || (no_car -> car_a_in -> car_d_in -> no_car -> S)) =
+	= absent -> (no_car -> ((car_a_in -> car_d_in -> C) || (car_a_in -> car_d_in -> no_car -> S)) = 
+	= absent -> (no_car -> (car_a_in -> car_d_in -> (no_car))).
