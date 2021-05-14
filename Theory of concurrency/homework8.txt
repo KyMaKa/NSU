@@ -1,0 +1,13 @@
+1. 
+	Car ⋂ Barrier = ∅ - нет deadlock'ов
+	Car ⋂ Light = ∅ - нет deadlock'ов
+	Barrier ⋂ Light = ∅ - нет deadlock'ов
+	Car ⋂ Counter = ∅ - нет deadlock'ов 
+	Barrier ⋂ Counter = ∅ - нет deadlock'ов
+	Light ⋂ Counter = ∅ - нет deadlock'ов
+	Barrier ⋂ Sensor = ∅ - нет deadlock'ов
+	Light ⋂ Sensor = ∅ - нет deadlock'ов
+	Counter ⋂ Sensor = ∅ - нет deadlock'ов
+
+2.
+	

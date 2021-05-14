@@ -29,7 +29,7 @@ CSP - процессы
               no_car -> car_a_out -> car_d_out -> no_car -> Sensor
 
 Контроллер: 
-       aCont = {static, green, red, open, close, car_a_in, car_a_out, car_d_in, car_d_in, no_car, incBy1, decBy1, zero}
+       aCont = {static, green, red, open, close, car_a_in, car_a_out, car_d_in, car_d_out, no_car, incBy1, decBy1, zero}
 
        Cont = static -> static -> Cont | zero -> zero -> Cont | static -> carIn | static -> carOut | zero -> noSpace | zero -> carOut
 

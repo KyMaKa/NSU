@@ -1,0 +1,18 @@
+1.
+	Возьмем процесс Sensor = no_car -> no_car -> Sensor | no_car -> car_a_in -> car_d_in -> no_car -> Sensor |
+              no_car -> car_a_out -> car_d_out -> no_car -> Sensor.
+	
+	Множество событий P = car_d_in, cad_d_out}.
+	
+	Sensor\P = no_car -> no_car -> Sensor | no_car -> car_a_in -> no_car -> Sensor | no_car -> car_a_out -> no_car -> Sensor.
+
+2. 	
+	Car = absent -> absent -> Car | absent -> car_approaching -> Car | absent -> car_approaching -> car_d_in
+              -> Car | absent -> car_approaching -> car_d_out -> Car.
+
+	Множество событий P = {absent}
+	
+	Car\P = Car | car_approaching -> Car | car_approaching -> car_d_in -> Car | car_approaching -> car_d_out -> Car
+
+3.
+	

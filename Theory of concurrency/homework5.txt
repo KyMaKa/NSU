@@ -1,0 +1,16 @@
+Task 5
+
+<static, green, car_a_in, open, cad_d_in, decBy1, no_car, close, zero, noSpace> = t1
+
+<zero, car_a_out, open, cad_d_out, incBy1, no_car, close, static, Cont> = t2
+
+<zero, red, car_a_in, cose, zero, zero, car_a_out, open, cad_d_out, incBy1> = t3
+
+t1|^{B} = <open, close>
+t2|^ {C} = <zero, static, static>
+t3|^ {TL} = <red>
+
+U(t>=0)(U(n=1)(close)^n * (open))^t       P1 = <zero, red, car_a_in>
+
+Cont' = Cont\P1 = close, zero, zero, car_a_out, open, cad_d_out, incBy1, no_car, 
+	close, static, car_a_in, noSpace, zero, red, car_a_in.
