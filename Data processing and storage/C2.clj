@@ -1,37 +1,21 @@
 (use 'clojure.test)
 
-(deftest primes-test
-  (is (= 2 (first primes)))
-  (is (= 3 (nth primes 1)))
-  (is (= 179 (nth primes 40)))
-)
-
-(def naturals
-(lazy-seq
-(cons 1 (map inc naturals))))
-
-(defn subtract [lst1 lst2] ; 
-(lazy-seq 
-    (if (< (first lst1) (first lst2)) 
-    (cons (first lst1) (subtract (rest lst1) lst2))
-    (
-      if (> (first lst1) (first lst2)) 
-      (subtract lst1 (rest lst2))
-      (subtract (rest lst1) (rest lst2))
-    )
-    )
+(defn divisible? [x y]
+  (zero? (rem x y))
   )
-)
 
-(defn sieve [lst] (lazy-seq
-(cons (first lst) (sieve (subtract (rest lst) (map (fn [x] (* x (first lst))) naturals))))
-))
+(defn sieve [stream]
+  (cons (first stream) (lazy-seq (sieve (filter #(not (divisible? % (first stream))) (rest stream)))))
+  )
 
-(def primes 
-(lazy-seq (
-  sieve (map inc naturals)
-)
-)
+(def primes (sieve (iterate inc 2)))
+
+(deftest SE
+  (is (= (take 2 primes) '(2 3)))
+  (is (= (take 3 primes) '(2 3 5)))
+  (is (= (take 4 primes) '(2 3 5 7)))
+  (is (= (take 5 primes) '(2 3 5 7 11)))
+  (is (= (nth primes 30) 127))
 )
 
 (run-tests)

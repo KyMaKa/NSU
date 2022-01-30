@@ -1,53 +1,44 @@
-(ns task3.core
+(ns job.Task3
   (:use clojure.test))
 
 (def naturals
-  (lazy-seq
-    (cons 1 (map inc naturals))))
-
-(defn filter-parallel [pred coll]
-  (let [chunk-size 10000,
-        block-size 1000]
-  (lazy-seq
-    (if (empty? coll) ; coll is split to keep the function lazy
-      coll
-      (concat
-        (reduce concat '()
-          (->> (partition-all block-size (take chunk-size coll))
-               (map #(future (doall (filter pred %))))
-               (doall)
-               (map deref)))
-        (filter-parallel pred (drop chunk-size coll)))))))
-
-
-(defn prime [n]
-  (let [helper (fn [x i]
-                 (if (> (* i i) x)
-                   true
-                   (if (zero? (mod x i))
-                     false
-                     (recur x (+ i 2)))))]
-    (or
-      (= n 2)
-      (and
-        (not (even? n))
-        (> n 1)
-        (helper n 3)))))
-
-(defn -main [& args]
-  (println "Parallel filter:")
-  (time (doall (filter-parallel prime (range 2 1000000))))
-  (println "Filter")
-  (time (doall (filter prime (range 2 1000000))))
-  (println "Infinite list")
-  (println (nth (filter-parallel prime naturals) 10000))
-  (shutdown-agents)
+  (iterate inc 1)
   )
 
-(deftest filter-test
-  (testing "Testing"
-    (is (= (filter-parallel prime (range 2 1000000)) (filter prime (range 2 1000000))))
-    (is (= (nth (filter-parallel prime naturals) 10000) (nth (filter prime naturals) 10000)))
-    ))
+(defn longCalc [n]
+  (Thread/sleep 5)
+  (zero? (rem n 5))
+  )
 
-(run-tests)
+(defn pfilter [pred coll]
+  (let [chunk-size 10000, block-size 500]
+    (lazy-seq
+      (if (empty? coll)
+        coll ;; если и так пустая, то не паримся и возвращаем её же
+        (concat ;; соединяем кусочки, которые обработает наш фильтр
+          (apply concat
+                  (->> (partition-all block-size (take chunk-size coll)) ;; разбиваем на список списков по block-size элементов
+                       (map #(future (doall (filter pred %))))
+                       (doall)
+                       (map deref))) ;; ждём конца исполнения
+          (pfilter pred (drop chunk-size coll)))
+        )
+      )
+    )
+  )
+
+(defn checkEfficiency []
+  "Сравнение эффективности параллельного варианта filter'а и обычного"
+  (println "\npfilter:")
+  (time (doall (pfilter longCalc (range 2 10000))))
+  (println "\nfilter:")
+  (time (doall (filter longCalc (range 2 10000))))
+  nil
+  )
+
+(deftest pfilterTest
+  (is (= (pfilter longCalc (range 2 100)) (filter longCalc (range 2 100))))
+  (is (= (nth (pfilter longCalc naturals) 150) (nth (filter longCalc naturals) 150))) ;; test for infinite list
+)
+
+;(run-tests 'job.Task3)
