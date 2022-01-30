@@ -1,5 +1,4 @@
-(ns job.Task3
-  (:use clojure.test))
+(use 'clojure.test)
 
 (def naturals
   (iterate inc 1)
@@ -14,13 +13,13 @@
   (let [chunk-size 10000, block-size 500]
     (lazy-seq
       (if (empty? coll)
-        coll ;; если и так пустая, то не паримся и возвращаем её же
-        (concat ;; соединяем кусочки, которые обработает наш фильтр
+        coll
+        (concat
           (apply concat
-                  (->> (partition-all block-size (take chunk-size coll)) ;; разбиваем на список списков по block-size элементов
+                  (->> (partition-all block-size (take chunk-size coll))
                        (map #(future (doall (filter pred %))))
                        (doall)
-                       (map deref))) ;; ждём конца исполнения
+                       (map deref)))
           (pfilter pred (drop chunk-size coll)))
         )
       )
@@ -35,10 +34,11 @@
   (time (doall (filter longCalc (range 2 10000))))
   nil
   )
+(checkEfficiency)
 
 (deftest pfilterTest
   (is (= (pfilter longCalc (range 2 100)) (filter longCalc (range 2 100))))
-  (is (= (nth (pfilter longCalc naturals) 150) (nth (filter longCalc naturals) 150))) ;; test for infinite list
+  (is (= (nth (pfilter longCalc naturals) 150) (nth (filter longCalc naturals) 150)))
 )
 
-;(run-tests 'job.Task3)
+(run-tests)
