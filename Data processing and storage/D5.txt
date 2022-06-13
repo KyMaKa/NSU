@@ -1,0 +1,245 @@
+1) List all the available source and destination cities:
+
+GET: /flights/cities
+
+Response:
+List of all available cities.
+return code: 200
+Ex: [{"New York", "London"}]
+
+2) List all the available source and destination airports:
+
+GET: /airports 
+
+Response:
+Returns list of airports.
+return code: 200
+Ex: [{
+    "airportCode": "YKS",
+    "name": {
+      "en": "Yakutsk Airport",
+      "ru": "Якутск"
+    },
+    "city": {
+      "en": "Yakutsk",
+      "ru": "Якутск"
+    },
+    "coordinates": "(129.77099609375,62.093299865722656)",
+    "timezone": "Asia/Yakutsk"
+    }]
+
+3) List the airports within a city
+
+GET: /airports?city=Moscow 
+city : String 
+
+Response:
+* airportCode : String 
+* timezone : String
+
+return code: 200
+
+Ex: [{
+    "airportCode": "SVO",
+    "name": {
+      "en": "Sheremetyevo International Airport",
+      "ru": "Шереметьево"
+    },
+    "city": {
+      "en": "Moscow",
+      "ru": "Москва"
+    },
+    "coordinates": "(37.4146,55.972599)",
+    "timezone": "Europe/Moscow"
+    }]
+
+4) List the inbound schedule for an airport: 
+	- Days of week
+	- Time of arrival
+	- Flight no
+	- Origin
+	
+GET: /airports/`SVO`/schedule/inbound
+code : String 
+
+Response:
+* dayOfWeek: String 
+* timeOfArrival: String
+* status: String
+* flightNo: String 
+* origin: String
+
+return code: 200
+
+Ex: [{
+    "dayOfWeek": "Thursday",
+    "timeOfArrival": "2017-08-31",
+    "status": "Scheduled",
+    "flightNo": "PG0648",
+    "origin": "UUA"
+    }]
+
+5) List  the outbound schedule for an airport:
+	- Days of week
+	- Time of departure
+	- Flight no
+	- Destination
+	
+GET: /airports/`SVO`/schedule/outbound
+code : String 
+
+Response:
+* dayOfWeek: String
+* timeOfDeparture: String
+* status: String
+* flightNo: String
+* destination: String
+
+return code: 200
+
+Ex: [{
+    "dayOfWeek": "Tuesday",
+    "timeOfDeparture": "2017-09-12",
+    "status": "Scheduled",
+    "flightNo": "PG0529",
+    "destination": "UFA"
+    }]
+
+6) List the routes connecting two points
+	- Point might be either an airport or a city. In the latter case we should search for  the flights connecting any airports within the city
+	- The mandatory “departure date” parameter limits the flights by the ones departing between 0:00:00 of the specified date and 0:00:00 of the next date
+	- The “booking class” parameter should be one of the 'Economy', 'Comfort', 'Business'
+	- Additional parameter limits the number of connections: 0 (direct), 1, 2, 3, unbound
+	
+GET: /flights/routes?from=LED&to=OVB&departureDate=25-06-2017&bookingClass=Economy&connections=0
+from: String - точка вылета, название города или код аэропорта
+to: String - пункт назначения, название города или код аэропорта
+departureDate: String - параметр ограничивает рейсы, выходящие в период с 0:00:00 с указанной даты и до 00:00:00 следующей даты
+bookingClass: String - класс условий полета
+connections: Number (optional) - 
+
+Response:
+* sourceAirportCode : String
+* sourceCity : String
+* destinationAirportCode : String
+* destinationCity : String
+* departureDate: String
+* routes : Array
+   * departureAirport : String
+   * departureCity : String
+   * departureDate : String
+   * arrivalAirport : String
+   * arrivalCity : String
+   * arrivalDate : String
+   * flightId : String
+   * bookingClass : String
+   * totalAmount : Number
+
+return code: 200
+
+Ex: {
+  "sourceAirport": "DME",
+  "sourceCity": "Москва",
+  "destinationAirport": "LED",
+  "destinationCity": "Санкт-Петербург",
+  "departureDate": "2017-08-31",
+  "routes": [
+    {
+      "children": [],
+      "departureAirport": "DME",
+      "arrivalAirport": "LED",
+      "departureCity": "Москва",
+      "arrivalCity": "Санкт-Петербург",
+      "departureDate": "2017-08-31",
+      "arrivalDate": "2017-08-31",
+      "flightId": 116,
+      "amount": null,
+      "fareConditions": "Economy"
+    },
+    {
+      "children": [],
+      "departureAirport": "DME",
+      "arrivalAirport": "LED",
+      "departureCity": "Москва",
+      "arrivalCity": "Санкт-Петербург",
+      "departureDate": "2017-08-31",
+      "arrivalDate": "2017-08-31",
+      "flightId": 115,
+      "amount": null,
+      "fareConditions": "Economy"
+    },
+    {
+      "children": [],
+      "departureAirport": "DME",
+      "arrivalAirport": "LED",
+      "departureCity": "Москва",
+      "arrivalCity": "Санкт-Петербург",
+      "departureDate": "2017-08-31",
+      "arrivalDate": "2017-08-31",
+      "flightId": 121,
+      "amount": null,
+      "fareConditions": "Economy"
+    },
+    {
+      "children": [],
+      "departureAirport": "DME",
+      "arrivalAirport": "LED",
+      "departureCity": "Москва",
+      "arrivalCity": "Санкт-Петербург",
+      "departureDate": "2017-08-31",
+      "arrivalDate": "2017-09-01",
+      "flightId": 120,
+      "amount": null,
+      "fareConditions": "Economy"
+    }
+  ]
+}
+
+7) Create a booking for a selected route for a single passenger
+
+PUT: /flights/bookings
+
+Request:
+passengerName : String
+flights : Array of {flight id, amount, fareCondition}
+
+Response:
+Array of :
+* ticketNumber : String
+* flightId : Number
+
+return code: 200
+
+Ex: [
+  {
+    "ticketNumber": "_06464e2a-37b",
+    "flightId": 121
+  },
+  {
+    "ticketNumber": "_06464e2a-37b",
+    "flightId": 120
+  }
+]
+
+8) Online check-in for a flight
+
+POST: /flights/`id`/check-in
+id : Number - id of the flight.
+
+Request:
+ticketNumber : Number
+
+Response:
+* ticketNo : String
+* flightId : Number
+* BoardingNo : Number
+* seatNo : String
+
+return code: 200
+
+Ex: {
+  "ticketNo": "_b78a0d9f-f86",
+  "flightId": 120,
+  "seatNo": "1A",
+  "boardingNo": 1
+}
