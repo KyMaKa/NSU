@@ -1,0 +1,9 @@
+drop table if exists price_info;
+
+create table price_info as (
+    select departure_airport, arrival_airport, fare_conditions, seat_no, avg(amount) from bookings.ticket_flights tf
+    join bookings.flights fl on tf.flight_id = fl.flight_id
+    join bookings.boarding_passes bp on bp.flight_id = tf.flight_id
+    join bookings.aircrafts_data ad on ad.aircraft_code = fl.aircraft_code
+    group by fare_conditions, departure_airport, arrival_airport, seat_no
+);
